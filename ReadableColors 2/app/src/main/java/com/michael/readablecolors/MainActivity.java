@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     RadioButton textRadioButton1;
     RadioButton textRadioButton2;
 
-    Button moreOptionsButton;
 
     RadioGroup infoColorRadioGroup;
     RadioButton infoRadioButton1;
@@ -147,9 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
         textRadioButton2 = (RadioButton) findViewById(R.id.textRadioButton2);
 
-        moreOptionsButton = (Button) findViewById(R.id.moreOptionsButton);
-        moreOptionsButton.setOnClickListener(MoreOptionsButtonHandler);
-
         infoColorRadioGroup = (RadioGroup) findViewById(R.id.infoColorRadioGroup);
         infoColorRadioGroup.setOnCheckedChangeListener(InfoColorRadioGroupHandler);
 
@@ -173,14 +169,13 @@ public class MainActivity extends AppCompatActivity {
         if(orientation == Configuration.ORIENTATION_LANDSCAPE){
             TEXT_SIZE_FACTOR = 0.012f;
             for (int i = 0; i < colorGridLayout.getChildCount(); i++) {
-                colorGridLayout.getChildAt(i).setMinimumWidth((int) ((screenPixelHeight - 36 * ratio) * 0.25));
+                colorGridLayout.getChildAt(i).setMinimumWidth((int) ((screenPixelHeight - 16 * ratio) * 0.25));
                 colorGridLayout.getChildAt(i).setMinimumHeight((int) ((screenPixelWidth - 24 * ratio) * 0.032));
                 ((TextView) colorGridLayout.getChildAt(i)).setTextSize(0, screenPixelHeight * (TEXT_SIZE_FACTOR));
             }
             appHeader.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR * 1.5f)));
             textRadioButton1.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
             textRadioButton2.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
-            moreOptionsButton.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
             infoRadioButton1.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
             infoRadioButton2.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
             infoRadioButton3.setTextSize(0, (screenPixelHeight * (TEXT_SIZE_FACTOR)));
@@ -190,14 +185,13 @@ public class MainActivity extends AppCompatActivity {
         }else {
             TEXT_SIZE_FACTOR = 0.033f;
             for (int i = 0; i < colorGridLayout.getChildCount(); i++) {
-                colorGridLayout.getChildAt(i).setMinimumWidth((int) ((screenPixelWidth - 36 * ratio) * 1 / 4));
+                colorGridLayout.getChildAt(i).setMinimumWidth((int) ((screenPixelWidth - 16 * ratio) * 1 / 4));
                 colorGridLayout.getChildAt(i).setMinimumHeight((int) ((screenPixelHeight - 24 * ratio) * 1 / 30));
                 ((TextView) colorGridLayout.getChildAt(i)).setTextSize(0, screenPixelWidth * TEXT_SIZE_FACTOR);
             }
             appHeader.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR * 1.5f)));
             textRadioButton1.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
             textRadioButton2.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
-            moreOptionsButton.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
             infoRadioButton1.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
             infoRadioButton2.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
             infoRadioButton3.setTextSize(0, (screenPixelWidth * (TEXT_SIZE_FACTOR)));
@@ -326,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void makeColorArray(){
 
-        for(int i = 0; i < 7400; i++){
+        for(int i = 0; i < arrayHSVColors.length; i++){
             for(int j = 0; j < 4; j++){
                 arrayHSVColors[i][j] = 0.0f;
             }
@@ -346,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     private void sortColorArray(final int sortCode){
         switch(sortCode){

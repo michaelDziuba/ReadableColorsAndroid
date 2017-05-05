@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.File;
 
@@ -20,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * table name and its column names
      */
-    private static final String SETTINGS = "settings";
+    private static final String SETTINGS = "settings"; //table name
     private static final String TEXT_COLOR_CODE = "text_color_code";
     private static final String TEXT_R = "text_r";
     private static final String TEXT_G = "text_g";
@@ -31,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SEEK_BAR_POSITION = "seek_bar_position";
 
     /**
-     * create table statement
+     * create settings table statement
      */
     private static final String CREATE_SETTINGS_TABLE = "CREATE TABLE IF NOT EXISTS " + SETTINGS + " (" +
                                                         ID + " INTEGER PRIMARY KEY, " +
@@ -122,28 +123,23 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Settings getSettings(){
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(
-                SETTINGS,
-                new String[]{ID, TEXT_COLOR_CODE, TEXT_R, TEXT_G, TEXT_B, INFO_COLOR_CODE, CONTRAST_CODE, SORT_CODE, SEEK_BAR_POSITION},
-                null,
-                null,
-                null,
-                null,
-                null);
+        String selectQuery = "SELECT * FROM " + SETTINGS;
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
         if(cursor != null){
             cursor.moveToFirst();
         }
+
         Settings settings = new Settings(
-                                cursor.getInt(0),
-                                cursor.getInt(1),
-                                cursor.getInt(2),
-                                cursor.getInt(3),
-                                cursor.getInt(4),
-                                cursor.getInt(5),
-                                cursor.getInt(6),
-                                cursor.getInt(7),
-                                cursor.getInt(8));
+                cursor.getInt(0),
+                cursor.getInt(1),
+                cursor.getInt(2),
+                cursor.getInt(3),
+                cursor.getInt(4),
+                cursor.getInt(5),
+                cursor.getInt(6),
+                cursor.getInt(7),
+                cursor.getInt(8));
         db.close();
         return settings;
     }

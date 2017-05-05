@@ -31,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
     PopupWindow pw;
     Button popupOKButton;
     RadioGroup contrastRadioGroup;
-    int contrastCode;
+
 
     RadioGroup sortRadioGroup;
-    int sortCode;
+
     int sortCode0;
     int sortCode1;
     int sortCode2;
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup textColorRadioGroup;
     RadioButton textRadioButton1;
     RadioButton textRadioButton2;
-    int textColorCode;
 
     Button moreOptionsButton;
 
@@ -58,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
     RadioButton infoRadioButton1;
     RadioButton infoRadioButton2;
     RadioButton infoRadioButton3;
-    int infoColorCode;
+
 
     TextView seekBarTextView1;
     TextView seekBarTextView2;
     TextView seekBarTextView3;
 
     SeekBar seekBar;
-    int seekBarPosition;
+
     int currentProgress;
     float progressScaleFactor;
 
@@ -87,11 +86,6 @@ public class MainActivity extends AppCompatActivity {
     double contrastRatio;
 
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
-
-
-    int textR;
-    int textG;
-    int textB;
 
 
     final double RGB_THRESHOLD = 0.03928;
@@ -223,27 +217,22 @@ public class MainActivity extends AppCompatActivity {
             settings = dbHelper.getSettings();
         }
 
-        textColorCode = settings.getTextColorCode();
-        textR = settings.getTextR();
-        textG = settings.getTextG();
-        textB = settings.getTextB();
-        infoColorCode = settings.getInfoColorCode();
-        contrastCode = settings.getContrastCode();
-        sortCode = settings.getSortCode();
-        seekBarPosition = settings.getSeekbarPosition();
-        switch(contrastCode){
+
+        switch(settings.getContrastCode()){
             case 0: minContrastRatio = 3.0f; break;
             case 1: minContrastRatio = 4.5f; break;
             case 2: minContrastRatio = 7.0f; break;
             default: break;
         }
 
-        ((RadioButton)textColorRadioGroup.getChildAt(textColorCode)).setChecked(true);
-        ((RadioButton)infoColorRadioGroup.getChildAt(infoColorCode)).setChecked(true);
+        ((RadioButton)textColorRadioGroup.getChildAt(settings.getTextColorCode())).setChecked(true);
+        ((RadioButton)infoColorRadioGroup.getChildAt(settings.getInfoColorCode())).setChecked(true);
 
 
         recreateAllForNewSettings();
     }
+
+
 
 
 
@@ -310,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             backgroundR = Color.red(color);
             backgroundG = Color.green(color);
             backgroundB = Color.blue(color);
-            contrastRatio = contrastRatio(textR,textG,textB, backgroundR, backgroundG, backgroundB);
+            contrastRatio = contrastRatio(settings.getTextR(),settings.getTextG(),settings.getTextB(), backgroundR, backgroundG, backgroundB);
 
             ((TextView)(colorGridLayout.getChildAt(i))).setText(decimalFormat.format(contrastRatio));
         }
@@ -347,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         for(short i = 0; i <= 255; i += 15){
             for(short j = 0; j <= 255; j += 5){
                 for(short k = 0; k <= 255; k += 30){
-                    contrastRatio = contrastRatio(textR,textG,textB, i,j,k);
+                    contrastRatio = contrastRatio(settings.getTextR(),settings.getTextG(),settings.getTextB(), i,j,k);
                     if(contrastRatio >= minContrastRatio){
                         Color.colorToHSV(Color.rgb(i,j,k), arrayHSVColors[count]);
                         arrayHSVColors[count][3] = (float)contrastRatio;
@@ -393,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setProgressScaleFactor(){
+        int textColorCode = settings.getTextColorCode();
         if(textColorCode == 0 && minContrastRatio == 3.0f){
             progressScaleFactor = 0.7f;
         }else if(textColorCode == 1 && minContrastRatio == 3.0f){
@@ -410,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showColorInfo(){
-        switch(infoColorCode){
+        switch(settings.getInfoColorCode()){
             case 0: makeHexCode(currentProgress); break;
             case 1: makeRGBCode(currentProgress); break;
             case 2: makeContrastRatio(currentProgress); break;
@@ -422,12 +412,12 @@ public class MainActivity extends AppCompatActivity {
     private void recreateAllForNewSettings(){
 
         makeColorArray();
-        sortColorArray(sortCode);
+        sortColorArray(settings.getSortCode());
         setProgressScaleFactor();
-        currentProgress = (int)(seekBarPosition * progressScaleFactor);
-        seekBar.setProgress(seekBarPosition);
+        currentProgress = (int)(settings.getSeekbarPosition() * progressScaleFactor);
+        seekBar.setProgress(settings.getSeekbarPosition());
         makeBackgroundColor(currentProgress);
-        makeTextColor(textR, textG, textB);
+        makeTextColor(settings.getTextR(), settings.getTextG(), settings.getTextB());
         showColorInfo();
     }
 
@@ -444,19 +434,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
-            textColorCode = group.indexOfChild(checkedRadioButton);
+            int textColorCode = group.indexOfChild(checkedRadioButton);
+
+            int textR = 0;
+            int textG = 0;
+            int textB = 0;
             switch(textColorCode){
                 case 0: textR = 255; textG = 255; textB = 255; break;
-                case 1: textR = 0; textG = 0; textB = 0; break;
+                case 1: break;
                 default: break;
             }
 
             settings.setTextColorCode(textColorCode);
             settings.setTextR(textR);
-            settings.setTextR(textG);
-            settings.setTextR(textB);
-
-            dbHelper.updateSettingsTable(settings);
+            settings.setTextG(textG);
+            settings.setTextB(textB);
 
             recreateAllForNewSettings();
         }
@@ -474,9 +466,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
-            infoColorCode = group.indexOfChild(checkedRadioButton);
+            int infoColorCode = group.indexOfChild(checkedRadioButton);
             settings.setInfoColorCode(infoColorCode);
-            dbHelper.updateSettingsTable(settings);
+
             showColorInfo();
         }
     };
@@ -486,10 +478,8 @@ public class MainActivity extends AppCompatActivity {
     SeekBar.OnSeekBarChangeListener SeekBarHandler = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            seekBarPosition = progress;
+            int seekBarPosition = progress;
             settings.setSeekbarPosition(seekBarPosition);
-
-            dbHelper.updateSettingsTable(settings);
 
             currentProgress = (int)(progress * progressScaleFactor);
             makeBackgroundColor(currentProgress);
@@ -552,12 +542,12 @@ public class MainActivity extends AppCompatActivity {
 
             contrastRadioGroup = (RadioGroup) pw.getContentView().findViewById(R.id.contrastRadioGroup);
 
-            ((RadioButton) contrastRadioGroup.getChildAt(contrastCode)).setChecked(true);
+            ((RadioButton) contrastRadioGroup.getChildAt(settings.getContrastCode())).setChecked(true);
             contrastRadioGroup.setOnCheckedChangeListener(ContrastRadioGroupOnCheckedChangeListener);
 
             sortRadioGroup = (RadioGroup) pw.getContentView().findViewById(R.id.sortRadioGroup);
 
-            ((RadioButton) sortRadioGroup.getChildAt(sortCode)).setChecked(true);
+            ((RadioButton) sortRadioGroup.getChildAt(settings.getSortCode())).setChecked(true);
             sortRadioGroup.setOnCheckedChangeListener(SortRadioGroupOnCheckedChangeListener);
 
         } catch (Exception e) {
@@ -587,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
-            contrastCode = group.indexOfChild(checkedRadioButton);
+            int contrastCode = group.indexOfChild(checkedRadioButton);
             switch(contrastCode){
                 case 0: minContrastRatio = 3.0f; break;
                 case 1: minContrastRatio = 4.5f; break;
@@ -596,8 +586,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             settings.setContrastCode(contrastCode);
-
-            dbHelper.updateSettingsTable(settings);
 
             recreateAllForNewSettings();
         }
@@ -608,11 +596,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
-            sortCode = group.indexOfChild(checkedRadioButton);
+            int sortCode = group.indexOfChild(checkedRadioButton);
 
             settings.setSortCode(sortCode);
-
-            dbHelper.updateSettingsTable(settings);
 
             recreateAllForNewSettings();
         }
@@ -634,6 +620,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
+
+        dbHelper.updateSettingsTable(settings);
+
         if(pw != null){
             pw.dismiss();
         }

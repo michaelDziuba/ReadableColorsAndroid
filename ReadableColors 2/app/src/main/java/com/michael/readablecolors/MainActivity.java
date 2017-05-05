@@ -109,23 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
 
-    private static final String DATABASE_NAME = "ReadableColors.db";
-    private static final String TABLE_NAME = "readable_colors_settings";
-    private static final String TEXT_COLOR_CODE = "text_color_code";
-    private static final String TEXT_R = "text_r";
-    private static final String TEXT_G = "text_g";
-    private static final String TEXT_B = "text_b";
-    private static final String INFO_COLOR_CODE = "info_color_code";
-    private static final String CONTRAST_CODE = "contrast_code";
-    private static final String SORT_CODE = "sort_code";
-    private static final String SEEK_BAR_POSITION = "seek_bar_position";
-
-
-    private static final String[] COLUMN_NAMES = {TEXT_COLOR_CODE, TEXT_R, TEXT_G, TEXT_B, INFO_COLOR_CODE,
-            CONTRAST_CODE, SORT_CODE, SEEK_BAR_POSITION};
-    private static final String[] COLUMN_DATA_TYPES = {"INTEGER", "INTEGER", "INTEGER", "INTEGER", "INTEGER",
-            "INTEGER", "INTEGER", "INTEGER"};
-    private static final int[] INSERT_VALUES = {0, 255, 255, 255, 0, 1, 1, 0};
+    private Settings settings =  new Settings(0, 255, 255, 255, 0, 1, 1, 0); //default settings
 
 
     @Override
@@ -230,39 +214,32 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        dbHelper = new DBHelper(this, DATABASE_NAME);
-        if(!dbHelper.isDatabaseExists(this, DATABASE_NAME)){
-            textColorCode = 0;
-            textR = 255;
-            textG = 255;
-            textB = 255;
-            infoColorCode = 0;
-            contrastCode = 1;
-            sortCode = 1;
-            minContrastRatio = 4.5f;
-            seekBarPosition = 0;
+        dbHelper = new DBHelper(getApplicationContext());
 
-            dbHelper.createTableIfNotExists(TABLE_NAME, COLUMN_NAMES, COLUMN_DATA_TYPES);
-            dbHelper.insertTableRow(TABLE_NAME, COLUMN_NAMES, INSERT_VALUES);
-
+        if(!dbHelper.isDatabase(getApplicationContext())){
+            long settingsId = dbHelper.insertSettings(settings);
+            settings.setId(settingsId);
         }else{
-            textColorCode = dbHelper.getTableValue(TABLE_NAME, TEXT_COLOR_CODE, 0);
-            textR = dbHelper.getTableValue(TABLE_NAME, TEXT_R, 0);
-            textG = dbHelper.getTableValue(TABLE_NAME, TEXT_G, 0);
-            textB = dbHelper.getTableValue(TABLE_NAME, TEXT_B, 0);
-            infoColorCode = dbHelper.getTableValue(TABLE_NAME, INFO_COLOR_CODE, 0);
-            contrastCode = dbHelper.getTableValue(TABLE_NAME, CONTRAST_CODE, 0);
-            sortCode = dbHelper.getTableValue(TABLE_NAME, SORT_CODE, 0);
-            switch(contrastCode){
-                case 0: minContrastRatio = 3.0f; break;
-                case 1: minContrastRatio = 4.5f; break;
-                case 2: minContrastRatio = 7.0f; break;
-                default: break;
-            }
-            seekBarPosition = dbHelper.getTableValue(TABLE_NAME, SEEK_BAR_POSITION, 0);
-            ((RadioButton)textColorRadioGroup.getChildAt(textColorCode)).setChecked(true);
-            ((RadioButton)infoColorRadioGroup.getChildAt(infoColorCode)).setChecked(true);
+            settings = dbHelper.getSettings();
         }
+
+        textColorCode = settings.getTextColorCode();
+        textR = settings.getTextR();
+        textG = settings.getTextG();
+        textB = settings.getTextB();
+        infoColorCode = settings.getInfoColorCode();
+        contrastCode = settings.getContrastCode();
+        sortCode = settings.getSortCode();
+        seekBarPosition = settings.getSeekbarPosition();
+        switch(contrastCode){
+            case 0: minContrastRatio = 3.0f; break;
+            case 1: minContrastRatio = 4.5f; break;
+            case 2: minContrastRatio = 7.0f; break;
+            default: break;
+        }
+
+        ((RadioButton)textColorRadioGroup.getChildAt(textColorCode)).setChecked(true);
+        ((RadioButton)infoColorRadioGroup.getChildAt(infoColorCode)).setChecked(true);
 
 
         recreateAllForNewSettings();
@@ -473,10 +450,14 @@ public class MainActivity extends AppCompatActivity {
                 case 1: textR = 0; textG = 0; textB = 0; break;
                 default: break;
             }
-            dbHelper.updateTableValue(TABLE_NAME, TEXT_COLOR_CODE, 0, textColorCode);
-            dbHelper.updateTableValue(TABLE_NAME, TEXT_R, 0, textR);
-            dbHelper.updateTableValue(TABLE_NAME, TEXT_G, 0, textG);
-            dbHelper.updateTableValue(TABLE_NAME, TEXT_B, 0, textB);
+
+            settings.setTextColorCode(textColorCode);
+            settings.setTextR(textR);
+            settings.setTextR(textG);
+            settings.setTextR(textB);
+
+            dbHelper.updateSettingsTable(settings);
+
             recreateAllForNewSettings();
         }
     };
@@ -494,7 +475,8 @@ public class MainActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
             infoColorCode = group.indexOfChild(checkedRadioButton);
-            dbHelper.updateTableValue(TABLE_NAME, INFO_COLOR_CODE, 0, infoColorCode);
+            settings.setInfoColorCode(infoColorCode);
+            dbHelper.updateSettingsTable(settings);
             showColorInfo();
         }
     };
@@ -505,7 +487,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             seekBarPosition = progress;
-            dbHelper.updateTableValue(TABLE_NAME, SEEK_BAR_POSITION, 0, seekBarPosition);
+            settings.setSeekbarPosition(seekBarPosition);
+
+            dbHelper.updateSettingsTable(settings);
+
             currentProgress = (int)(progress * progressScaleFactor);
             makeBackgroundColor(currentProgress);
             showColorInfo();
@@ -610,7 +595,9 @@ public class MainActivity extends AppCompatActivity {
                 default: break;
             }
 
-            dbHelper.updateTableValue(TABLE_NAME, CONTRAST_CODE, 0, contrastCode);
+            settings.setContrastCode(contrastCode);
+
+            dbHelper.updateSettingsTable(settings);
 
             recreateAllForNewSettings();
         }
@@ -622,7 +609,11 @@ public class MainActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             View checkedRadioButton = group.findViewById(checkedId);
             sortCode = group.indexOfChild(checkedRadioButton);
-            dbHelper.updateTableValue(TABLE_NAME, SORT_CODE, 0, sortCode);
+
+            settings.setSortCode(sortCode);
+
+            dbHelper.updateSettingsTable(settings);
+
             recreateAllForNewSettings();
         }
     };

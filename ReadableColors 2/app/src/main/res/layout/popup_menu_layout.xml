@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="#C0FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/popupElement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/menu_background">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/headerTextView"
+            android:layout_marginBottom="@dimen/activity_vertical_margin" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/popupLinearLayout"
+            android:layout_below="@id/headerTextView"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minimum contrast ratio\nbetween text and background"
+                android:gravity="center"
+                android:id="@+id/textView1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/contrastRadioGroup"
+                android:layout_marginBottom="15dp"
+                android:clickable="true">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3.0"
+                    android:textStyle="bold"
+                    android:id="@+id/contrastRadioButton1" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5"
+                    android:textStyle="bold"
+                    android:checked="true"
+                    android:id="@+id/contrastRadioButton2" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7.0"
+                    android:textStyle="bold"
+                    android:id="@+id/contrastRadioButton3" />
+
+
+            </RadioGroup>
+
+<!--
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Game sounds On"
+                android:textStyle="bold"
+                android:checked="true"
+                android:id="@+id/soundsCheckBox"
+                android:layout_marginBottom="15dp"
+                android:layout_gravity="center_horizontal" />
+-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sort colors by:"
+                android:gravity="center"
+                android:id="@+id/textView2"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sortRadioGroup"
+                android:clickable="true">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hue"
+                    android:textStyle="bold"
+                    android:id="@+id/sortRadioButton1" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saturation"
+                    android:checked="true"
+                    android:textStyle="bold"
+                    android:id="@+id/sortRadioButton2" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brightness"
+                    android:textStyle="bold"
+                    android:id="@+id/sortRadioButton3" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contrast"
+                    android:textStyle="bold"
+                    android:id="@+id/sortRadioButton4" />
+
+            </RadioGroup>
+
+
+
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/popupOKButton"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/popupLinearLayout"/>
+    </RelativeLayout>
+</LinearLayout>
+

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Readable Colors</string>
+
+    <string name="about_text">
+        The purpose of this app is to help you find colored backgrounds for black or white text.\n\n
+
+        It\'s based on W3C standards and formula for contrast ratio between text and background. W3C recommends the following minimum standards:\n\n
+
+        For normal text less than 18 point and for bold text less than 14 point, the minimum contrast ratio is 7:1.  For normal text at least 18 point and for bold text at least 14 point, the minimum contrast ratio is 4.5:1.  For logos, decorative text, and large scale text, the minimum contrast ratio is 3:1.\n\n
+
+        https://www.w3.org/TR/2008/REC-WCAG20-20081211/#visual-audio-contrast \n\n
+        https://www.w3.org/TR/WCAG20-TECHS/G17.html
+
+
+    </string>
+
+</resources>

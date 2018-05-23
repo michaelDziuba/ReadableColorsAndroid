@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
 
         screenPixelWidth = getResources().getDisplayMetrics().widthPixels;
         screenPixelHeight = getResources().getDisplayMetrics().heightPixels;
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             screenPixelWidth = screenPixelHeight;
             screenPixelHeight = temp;
         }
-
 
         float screenInchesHeight = screenPixelHeight / xdpi;
         if(screenInchesHeight < 7.7f) {
